@@ -33,7 +33,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
     @Override
     @Transactional(readOnly = true)
     public Optional<Usuario> encontrarPorUsuario(String usuario) {
-        return usuarioRepository.findByUsuario(usuario);
+        return usuarioRepository.findByUsuarioIgnoreCase(usuario);
     }
 
     @Override
