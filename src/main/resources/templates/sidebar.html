@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="sidebar(activeUri)">
+    <div id="sidebar-overlay" class="sidebar-overlay"></div>
+    <nav
+            id="sidebar"
+            class="sidebar d-flex flex-column flex-shrink-0 p-3 text-sidebar-color"
+            style="z-index: 1050"
+    >
+        <div class="d-flex align-items-center justify-content-between mt-1">
+<!--            <a-->
+<!--                    th:href="@{/dashboard}"-->
+<!--                    class="d-flex align-items-center text-sidebar-color text-decoration-none fw-bold"-->
+<!--                    th:if="${empresaGlobal != null}"-->
+<!--            >-->
+<!--                <img-->
+<!--                        th:src="@{${nodeUrl} + '/imagenes/empresa/logo/' + ${logo}}"-->
+<!--                        alt="Logo"-->
+<!--                        class="sidebar-logo img-fluid mt-1 me-2"-->
+<!--                />-->
+<!--                <span-->
+<!--                        class="fs-6 text-white"-->
+<!--                        th:text="${empresaGlobal.nombre}"-->
+<!--                ></span>-->
+<!--            </a>-->
+            <a th:href="@{/dashboard}" class="d-flex align-items-center text-sidebar-color text-decoration-none fw-bold">
+                <span class="fs-6 text-white">
+                    La Jama
+                </span>
+            </a>
+            <button id="close-sidebar" class="btn btn-dark d-md-none p-0">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <hr />
+
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li th:each="opcion : ${session.opcionesIndependientes}">
+                <a
+                        th:href="@{${opcion.ruta}}"
+                        class="nav-link text-sidebar-color rounded-lg"
+                        th:classappend="${opcion.ruta == activeUri} ? 'active' : ''"
+                >
+                    <span th:text="${opcion.nombre}"></span>
+                </a>
+            </li>
+
+            <li
+                    class="nav-item"
+                    th:each="grupo : ${session.menuAgrupado.entrySet()}"
+            >
+                <th:block
+                        th:with="isGroupActive=${grupo.value.?[ruta == #activeUri].size() > 0}"
+                >
+                    <a
+                            class="nav-link text-sidebar-color d-flex justify-content-between align-items-center"
+                            data-bs-toggle="collapse"
+                            th:href="@{'#collapse-' + ${grupo.key}}"
+                            th:classappend="${!isGroupActive} ? 'collapsed' : ''"
+                            role="button"
+                            th:aria-expanded="${isGroupActive}"
+                            th:aria-controls="@{'collapse-' + ${grupo.key}}"
+                    >
+                        <span th:text="${grupo.key}"></span>
+                        <i class="bi bi-chevron-down" style="font-size: 0.8rem"></i>
+                    </a>
+
+                    <div
+                            th:id="@{'collapse-' + ${grupo.key}}"
+                            th:classappend="${isGroupActive} ? 'show' : ''"
+                            class="collapse"
+                    >
+                        <ul class="nav flex-column ps-3">
+                            <li th:each="opcion : ${grupo.value}">
+                                <a
+                                        th:href="@{${opcion.ruta}}"
+                                        class="nav-link text-sidebar-color rounded-lg"
+                                        th:classappend="${opcion.ruta == activeUri} ? 'active-submenu' : ''"
+                                >
+                                    <span th:text="${opcion.nombre}"></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </th:block>
+            </li>
+        </ul>
+
+        <div class="d-flex flex-column mt-3">
+            <ul class="nav nav-pills flex-column">
+                <li>
+                    <a href="/logout" class="nav-link text-sidebar-color rounded-lg"
+                    ><i class="bi bi-box-arrow-left me-2"></i>Cerrar Sesión</a
+                    >
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+</body>
+</html>
