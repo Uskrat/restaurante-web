@@ -26,7 +26,7 @@ public class Perfil {
     @Column(name="descripcion")
     private String descripcion;
 
-    @Column(name="perfil", nullable = false)
+    @Column(name="estado", nullable = false)
     private Integer estado = 1;
 
     @ManyToMany(fetch = FetchType.EAGER)

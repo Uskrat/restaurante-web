@@ -11,7 +11,7 @@ public interface IUsuarioService {
     Optional<Usuario> encontrarPorUsuario(String usuario);
 
     Usuario guardar(Usuario usuario);
-    Optional<Usuario> alternarEstado(Long id);
+    Usuario alternarEstado(Long id);
 
     void eliminar(Long id);
 

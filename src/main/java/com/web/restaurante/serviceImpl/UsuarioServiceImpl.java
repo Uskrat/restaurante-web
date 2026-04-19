@@ -3,6 +3,7 @@ package com.web.restaurante.serviceImpl;
 import com.web.restaurante.model.Usuario;
 import com.web.restaurante.repository.UsuarioRepository;
 import com.web.restaurante.service.IUsuarioService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,16 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @Service
 public class UsuarioServiceImpl implements IUsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-
-    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, BCryptPasswordEncoder passwordEncoder) {
-        this.usuarioRepository = usuarioRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @Override
     @Transactional(readOnly = true)
@@ -28,17 +25,19 @@ public class UsuarioServiceImpl implements IUsuarioService {
     }
 
     @Override
-    @Transactional
+    @Transactional (readOnly = true)
     public Optional<Usuario> obtenerPorId(Long id) {
         return usuarioRepository.findById(id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Usuario> encontrarPorUsuario(String usuario) {
         return usuarioRepository.findByUsuario(usuario);
     }
 
     @Override
+    @Transactional
     public Usuario guardar(Usuario usuario) {
 
         // Si existe (actualizar)
@@ -46,88 +45,96 @@ public class UsuarioServiceImpl implements IUsuarioService {
             Usuario existente = usuarioRepository.findById(usuario.getId())
                     .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado para actualizar"));
 
-            if (esUsuarioDuplicado(usuario.getUsuario(), usuario.getId())) throw new IllegalArgumentException(
-                    "Este usuario ya está en uso por otra cuenta activa."
-            );
-
-            if (esCorreoDuplicado(usuario.getCorreo(), usuario.getId())) throw new IllegalArgumentException(
-                    "El correo ya está en uso por otra cuenta activa."
-            );
+            validarDuplicados(usuario);
 
             existente.setNombre(usuario.getNombre());
             existente.setUsuario(usuario.getUsuario());
             existente.setCorreo(usuario.getCorreo());
 
-            if (usuario.getClave() != null && !usuario.getClave().trim().isEmpty()) {
-                existente.setClave(passwordEncoder.encode(usuario.getClave().trim()));
-            }
+            validarClave(usuario.getClave());
+            existente.setClave(passwordEncoder.encode(usuario.getClave().trim()));
 
             return usuarioRepository.save(existente);
         }
         // Si es nuevo (crear)
 
-        if (esUsuarioDuplicado(usuario.getUsuario(), null)) throw new IllegalArgumentException(
-                "Este usuario ya está en uso por otra cuenta activa."
-        );
-
-        if (esCorreoDuplicado(usuario.getCorreo(), null)) throw new IllegalArgumentException(
-                "El correo ya está en uso por otra cuenta activa."
-        );
+        validarDuplicados(usuario);
 
         // Encripta la clave
-        if (usuario.getClave() == null || usuario.getClave().trim().isEmpty()) {
-            throw new IllegalArgumentException(
-                    "La clave es obligatoria"
-            );
-        }
+        validarClave(usuario.getClave());
         usuario.setClave(passwordEncoder.encode(usuario.getClave().trim()));
 
         return usuarioRepository.save(usuario);
     }
 
     @Override
-    public Optional<Usuario> alternarEstado(Long id) {
-        return Optional.empty();
+    @Transactional
+    public Usuario alternarEstado(Long id) {
+        validarId(id);
+
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+
+        usuario.setEstado(usuario.getEstado() == 1 ? 0 : 1);
+        return usuarioRepository.save(usuario);
     }
 
     @Override
+    @Transactional
     public void eliminar(Long id) {
+        validarId(id);
 
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+
+        usuario.setEstado(2);
+        usuarioRepository.save(usuario);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public long contar() {
-        return 0;
+        return usuarioRepository.countByEstadoNot(2);
     }
 
     @Override
     public boolean verificarClave(String claveTextoPlano, String claveEncriptada) {
-        return false;
+        return passwordEncoder.matches(claveTextoPlano, claveEncriptada);
     }
 
+    // Métodos de chequeo
+
     private boolean esUsuarioDuplicado(String usuario, Long id) {
-        Optional<Usuario> existente = usuarioRepository.findByUsuarioIgnoreCase(usuario);
-
-        if (existente.isEmpty()) return false;
-
-        Usuario u = existente.get();
-
-        boolean esActivo = u.getEstado() != 2;
-        boolean esMismoId = id != null && u.getId().equals(id);
-
-        return esActivo && !esMismoId;
+        return usuarioRepository.findByUsuarioIgnoreCase(usuario)
+                .filter(u -> u.getEstado() != 2)
+                .filter(u -> !u.getId().equals(id))
+                .isPresent();
     }
 
     private boolean esCorreoDuplicado(String correo, Long id) {
-        Optional<Usuario> existente = usuarioRepository.findByCorreoIgnoreCase(correo);
+        return usuarioRepository.findByCorreoIgnoreCase(correo)
+                .filter(u -> u.getEstado() != 2)
+                .filter(u -> !u.getId().equals(id))
+                .isPresent();
+    }
 
-        if (existente.isEmpty()) return false;
+    private void validarDuplicados(Usuario usuario) {
+        if (esUsuarioDuplicado(usuario.getUsuario(), usuario.getId())) {
+            throw new IllegalArgumentException("Este usuario ya está en uso por otra cuenta activa.");
+        }
 
-        Usuario u = existente.get();
+        if (esCorreoDuplicado(usuario.getCorreo(), usuario.getId())) {
+            throw new IllegalArgumentException("El correo ya está en uso por otra cuenta activa.");
+        }
+    }
 
-        boolean esActivo = u.getEstado() != 2;
-        boolean esMismoId = id != null && u.getId().equals(id);
+    private void validarId(Long id) {
+        if (id == null) throw new IllegalArgumentException("ID de usuario es null");
+        if (id <= 0) throw new IllegalArgumentException("ID de usuario inválido");
+    }
 
-        return esActivo && !esMismoId;
+    private void validarClave(String clave) {
+        if (clave == null) throw new IllegalArgumentException("La clave es null");
+        if (clave.trim().isEmpty()) throw new IllegalArgumentException("La clave está vacía");
     }
 }

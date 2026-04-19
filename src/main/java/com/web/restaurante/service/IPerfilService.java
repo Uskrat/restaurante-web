@@ -9,11 +9,11 @@ import java.util.Optional;
 public interface IPerfilService {
     List<Perfil> listar();
     Optional<Perfil> obtenerPorId(Long id);
-    Optional<Perfil> encontrarPorPerfil(String perfil);
+    Optional<Perfil> encontrarPorNombre(String nombre);
 
 
     Perfil guardar(Perfil perfil);
-    Optional<Perfil> alternarEstado(Long id);
+    Perfil alternarEstado(Long id);
 
     void eliminar(Long id);
 
