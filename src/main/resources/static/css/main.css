@@ -74,6 +74,8 @@ main.container-fluid.p-4,
   width: calc-size(auto, size - 17px);
   border: 1px solid var(--border);
   border-radius: 10px;
+  background-color: #fff;
+  color: #121212;
 }
 
 tr {
@@ -131,10 +133,6 @@ input.form-control.form-control-sm {
 /* links */
 .page-link {
   color: var(--primary) !important;
-}
-
-.nav-link {
-  color: #212529 !important;
 }
 
 /* buttons */

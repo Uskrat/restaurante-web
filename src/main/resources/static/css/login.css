@@ -22,6 +22,16 @@ body {
   width: 50%;
 }
 
+.login-page > .center {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
 .right-side {
   background-color: #ffffff;
 }
@@ -69,7 +79,7 @@ body {
 }
 
 .form-group-icon .form-control:focus {
-  border-color: #8e6c49;
+  border-color: #f39c12;
   box-shadow: 0 0 0 0.25rem rgba(142, 108, 73, 0.25);
 }
 
@@ -85,9 +95,9 @@ body {
 }
 
 .btn-login {
-  background-color: #ac9c8d;
+  background-color: #f39c12;
   border: none;
-  color: #ffffff;
+  color: #fff;
   font-weight: 700;
   padding: 0.9rem;
   border-radius: 12px;
@@ -96,7 +106,7 @@ body {
 }
 
 .btn-login:hover {
-  background-color: #8e6c49;
+  background-color: #fff;
   transform: translateY(-2px);
 }
 
