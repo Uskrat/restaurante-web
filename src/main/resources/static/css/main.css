@@ -146,7 +146,9 @@ input.form-control.form-control-sm {
   border-color: var(--primary-border) !important;
 }
 
-/* dashboard */
-.card-dashboard {
-  background: var(--white) !important;
+.dataTables_length label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
 }
