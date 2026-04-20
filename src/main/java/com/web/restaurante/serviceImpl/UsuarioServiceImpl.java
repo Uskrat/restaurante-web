@@ -50,9 +50,11 @@ public class UsuarioServiceImpl implements IUsuarioService {
             existente.setNombre(usuario.getNombre());
             existente.setUsuario(usuario.getUsuario());
             existente.setCorreo(usuario.getCorreo());
+            existente.setPerfil(usuario.getPerfil());
 
-            validarClave(usuario.getClave());
-            existente.setClave(passwordEncoder.encode(usuario.getClave().trim()));
+            if (!esClaveVacia(usuario.getClave())) {
+                existente.setClave(passwordEncoder.encode(usuario.getClave().trim()));
+            }
 
             return usuarioRepository.save(existente);
         }
@@ -131,6 +133,10 @@ public class UsuarioServiceImpl implements IUsuarioService {
     private void validarId(Long id) {
         if (id == null) throw new IllegalArgumentException("ID de usuario es null");
         if (id <= 0) throw new IllegalArgumentException("ID de usuario inválido");
+    }
+
+    private boolean esClaveVacia(String clave) {
+        return clave == null || clave.trim().isEmpty();
     }
 
     private void validarClave(String clave) {

@@ -50,6 +50,7 @@ public class PerfilServiceImpl implements IPerfilService {
 
             existente.setNombre(perfil.getNombre().trim());
             existente.setDescripcion(perfil.getDescripcion().trim());
+            existente.setOpciones(perfil.getOpciones());
 
             return perfilRepository.save(existente);
         }

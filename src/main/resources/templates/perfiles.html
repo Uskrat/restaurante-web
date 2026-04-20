@@ -1,10 +1,165 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Perfiles</title>
+
+    <th:block th:replace="~{links :: headLinks}"></th:block>
+
 </head>
 <body>
+    <div class="d-flex">
+        <!--        Sidebar -->
+        <div th:replace="~{sidebar :: sidebar(activeUri='/')}"></div>
 
+        <!--        Contenedor de la página -->
+        <main id="main-content" class="main-content w-100">
+            <!--            Header propio de la página -->
+            <header class="header-size m-2 ms-3 me-0 mt-3 p-3">
+                <div
+                        class="d-flex align-items-center justify-content-between"
+                >
+                    <div class="d-flex align-items-center gap-3">
+                        <button id="open-sidebar" class="btn btn-light d-md-none">
+                            <i class="bi bi-list fs-4"></i>
+                        </button>
+                        <h4 class="mb-0 fw-bold">Gestión de Perfiles</h4>
+                    </div>
+                    <button id="btnNuevoRegistro" class="btn btn-primary ms-auto">
+                        Nuevo Registro
+                    </button>
+                </div>
+            </header>
+
+            <!--            Contenido propio de la página-->
+            <div class="container-fluid p-4">
+                <div class="card rounded-lg card-color1">
+                    <div class="card-body">
+                        <h1 class="card-title h5 mb-4 fw-bold">Lista de Usuarios</h1>
+                        <table
+                                id="tabla"
+                                class="table table-hover responsive"
+                                style="width: 100%"
+                        >
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="modal fade" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true" id="modal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">
+                        Agregar Perfil
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form" novalidate>
+                        <input type="hidden" id="id" name="id" />
+                        <div class="row g-3">
+
+                            <div class="col-md-6">
+                                <label for="nombre" class="form-label">Nombre:</label>
+                                <input
+                                        id="nombre" name="nombre"
+                                        type="text" class="form-control"
+                                />
+                                <div id="nombre-error" class="invalid-feedback d-block"></div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="descripcion" class="form-label">Descripción:</label>
+                                <textarea
+                                        id="descripcion"
+                                        name="descripcion"
+                                        class="form-control"
+                                        rows="3"
+                                ></textarea>
+                                <div id="descripcion-error" class="invalid-feedback d-block"></div>
+                            </div>
+
+
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+                    <button type="submit" form="form" class="btn btn-primary">
+                        Guardar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Permisos -->
+    <div id="permisosModal" class="modal fade" tabindex="-1" aria-labelledby="permisosModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="permisosModalLabel">
+                        Asignar Permisos
+                    </h5>
+                    <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                    ></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formPermisos">
+                        <input type="hidden" id="permisoPerfilId" />
+                        <p>
+                            Seleccione los módulos a los que tendrá acceso el perfil
+                            <strong id="permisoPerfilNombre"></strong>:
+                        </p>
+                        <div id="listaOpciones" class="list-group">
+                            <!-- Las opciones se cargarán aquí dinámicamente -->
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button
+                            type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal"
+                    >
+                        Cancelar
+                    </button>
+                    <button
+                            type="button"
+                            id="btnGuardarPermisos"
+                            class="btn btn-primary"
+                    >
+                        Guardar Permisos
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification-container" class="toast-container position-fixed top-0 end-0 p-3"></div>
+
+    <th:block th:replace="~{links :: scriptLinksPlus}"></th:block>
+
+    <script th:src="@{/js/perfiles.js}"></script>
 </body>
 </html>

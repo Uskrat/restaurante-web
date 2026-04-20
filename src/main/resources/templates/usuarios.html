@@ -61,9 +61,7 @@
         </main>
     </div>
 
-    <div class="modal fade" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true"
-            id="modal"
-    >
+    <div class="modal fade" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true" id="modal">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -80,11 +78,8 @@
                             <div class="col-md-6">
                                 <label for="nombre" class="form-label">Nombre:</label>
                                 <input
-                                        type="text"
-                                        id="nombre"
-                                        name="nombre"
-                                        class="form-control"
-                                        readonly
+                                        id="nombre" name="nombre"
+                                        type="text" class="form-control"
                                 />
                                 <div id="nombre-error" class="invalid-feedback d-block"></div>
                             </div>
@@ -92,11 +87,8 @@
                             <div class="col-md-6">
                                 <label for="usuario" class="form-label">Usuario:</label>
                                 <input
-                                        type="text"
-                                        id="usuario"
-                                        name="usuario"
-                                        class="form-control"
-                                        readonly
+                                        id="usuario" name="usuario"
+                                        type="text" class="form-control"
                                 />
                                 <div id="usuario-error" class="invalid-feedback d-block"></div>
                             </div>
@@ -106,12 +98,9 @@
                                 >Correo Electrónico:</label
                                 >
                                 <input
-                                        type="email"
-                                        id="correo"
-                                        name="correo"
+                                        id="correo" name="correo"
+                                        type="email" class="form-control" autocomplete="email"
                                         placeholder="ejemplo@gmail.com"
-                                        class="form-control"
-                                        autocomplete="email"
                                 />
                                 <div id="correo-error" class="invalid-feedback d-block"></div>
                             </div>
@@ -119,9 +108,8 @@
                             <div class="col-md-6">
                                 <label for="id_perfil" class="form-label">Perfil:</label>
                                 <select
+                                        id="id_perfil" name="perfil"
                                         class="form-select"
-                                        id="id_perfil"
-                                        name="perfil"
                                 ></select>
                                 <div
                                         id="id_perfil-error"
@@ -130,15 +118,10 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label for="clave" class="form-label"
-                                >Clave:</label
-                                >
+                                <label for="clave" class="form-label">Clave:</label>
                                 <input
-                                        type="password"
-                                        id="clave"
-                                        name="clave"
-                                        placeholder="Clave"
-                                        class="form-control"
+                                        id="clave" name="clave"
+                                        type="password" placeholder="Clave" class="form-control"
                                 />
                                 <div id="clave-error" class="invalid-feedback d-block"></div>
                             </div>

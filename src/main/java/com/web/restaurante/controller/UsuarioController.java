@@ -97,6 +97,35 @@ public class UsuarioController {
         }
     }
 
+    @PostMapping("/api/cambiar-estado/{id}")
+    @ResponseBody
+    public ResponseEntity<?> cambiarEstadoUsuarioAjax(@PathVariable Long id, HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Usuario usuarioLogueado = (Usuario) session.getAttribute("usuarioLogueado");
+            if (Objects.equals(usuarioLogueado.getId(), id)) {
+                response.put("success", false);
+                response.put("message", "Operación no permitida: No puedes cambiar de estado tu propia cuenta.");
+                System.out.println("Self-deletion attempt blocked for user ID: " + id);
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+            }
+            Usuario usuario = usuarioService.alternarEstado(id);
+            if (usuario != null) {
+                response.put("success", true);
+                response.put("message", "Estado del usuario actualizado correctamente");
+                return ResponseEntity.ok(response);
+            } else {
+                response.put("success", false);
+                response.put("message", "Usuario no encontrado o la operación no pudo realizarse");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Error al cambiar estado: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+
     @DeleteMapping("/api/eliminar/{id}")
     @ResponseBody
     public ResponseEntity<?> eliminarUsuarioAjax(@PathVariable Long id, HttpSession session) {
@@ -133,35 +162,6 @@ public class UsuarioController {
             System.err.println("Unexpected Error deleting user ID " + id + ": " + e.getMessage());
             response.put("success", false);
             response.put("message", "Error interno del servidor al eliminar el usuario.");
-            return ResponseEntity.internalServerError().body(response);
-        }
-    }
-
-    @PostMapping("/api/cambiar-estado/{id}")
-    @ResponseBody
-    public ResponseEntity<?> cambiarEstadoUsuarioAjax(@PathVariable Long id, HttpSession session) {
-        Map<String, Object> response = new HashMap<>();
-        try {
-            Usuario usuarioLogueado = (Usuario) session.getAttribute("usuarioLogueado");
-            if (Objects.equals(usuarioLogueado.getId(), id)) {
-                response.put("success", false);
-                response.put("message", "Operación no permitida: No puedes cambiar de estado tu propia cuenta.");
-                System.out.println("Self-deletion attempt blocked for user ID: " + id);
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
-            }
-            Usuario usuario = usuarioService.alternarEstado(id);
-            if (usuario != null) {
-                response.put("success", true);
-                response.put("message", "Estado del usuario actualizado correctamente");
-                return ResponseEntity.ok(response);
-            } else {
-                response.put("success", false);
-                response.put("message", "Usuario no encontrado o la operación no pudo realizarse");
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-            }
-        } catch (Exception e) {
-            response.put("success", false);
-            response.put("message", "Error al cambiar estado: " + e.getMessage());
             return ResponseEntity.internalServerError().body(response);
         }
     }

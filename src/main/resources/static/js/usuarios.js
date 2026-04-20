@@ -42,9 +42,9 @@ $(document).ready(function () {
                     render: (data, type, row) => AppUtils.createActionButtons(row)
                 }
             ],
-            dom: "<'row pb-2'<'col-md-6'l><'col-md-6 d-flex justify-content-end'f>>" +
-                     "<'row'<'col-12'tr>>" +
-                     "<'row'<'col-md-5'i><'col-md-7'p>>",
+            dom: "<'row pb-2 align-items-center'<'col-md-6'l><'col-md-6 d-flex justify-content-end'f>>" +
+                  "<'row'<'col-sm-12'tr>>" +
+                  "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
             language: {
                 "processing": "Procesando...",
                 "lengthMenu": "Mostrar _MENU_ registros",
@@ -173,11 +173,6 @@ $(document).ready(function () {
         isEditing = false;
         AppUtils.clearForm(formId);
         $('#modalTitle').text('Agregar Usuario');
-        $('#usuario').prop('readonly', false);
-        $('#nombre').prop('readonly', false);
-        $('#correo').prop('readonly', false);
-        $('#id_perfil').prop('disabled', false);
-
         modal.show();
     }
 
