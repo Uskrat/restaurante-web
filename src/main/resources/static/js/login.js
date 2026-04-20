@@ -16,7 +16,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    const errorMessage = null;
     if (errorMessage) {
         Swal.fire({
             icon: "error",
@@ -26,7 +25,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    const logoutMessage = null;
     if (logoutMessage) {
         Swal.fire({
             icon: "success",
