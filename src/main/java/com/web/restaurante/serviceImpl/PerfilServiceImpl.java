@@ -77,10 +77,7 @@ public class PerfilServiceImpl implements IPerfilService {
     public void eliminar(Long id) {
         validarId(id);
 
-        long usuariosAsociados = usuarioRepository.countByPerfil_Id(id);
-        if (usuariosAsociados > 0) {
-            throw new IllegalArgumentException("No se puede eliminar el perfil, esta relacionado con uno o más usuarios");
-        }
+        validarUsuariosAsociados(id);
 
         Perfil perfil = perfilRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Perfil no encontrado"));
@@ -112,5 +109,10 @@ public class PerfilServiceImpl implements IPerfilService {
     private void validarId(Long id) {
         if (id == null) throw new IllegalArgumentException("ID de perfil es null");
         if (id <= 0) throw new IllegalArgumentException("ID de perfil inválido");
+    }
+
+    private void validarUsuariosAsociados(Long id) {
+        long usuariosAsociados = usuarioRepository.countByPerfil_Id(id);
+        if (usuariosAsociados > 0) throw new IllegalArgumentException("No se puede eliminar el perfil, esta relacionado con uno o más usuarios");
     }
 }
